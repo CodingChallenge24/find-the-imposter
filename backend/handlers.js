@@ -1,4 +1,4 @@
-const { QUERY_TYPE, ANSWER } = require("./consts");
+const { QUERY_TYPE, ANSWER } = require("./constants");
 const { n, k, imposIds } = require("./data");
 const messageGenerator = require("./messages");
 const validator = require("./validator");
@@ -54,6 +54,10 @@ function handleAnswer(req) {
   if (!validator.allIntegers(tmp))
     return handleInvalid(messageGenerator.allowOnlyIntegers());
   const [out_k, ...positions] = tmp;
+  if (!validator.expectedNumber(out_k, positions.length))
+    return handleInvalid(
+      messageGenerator.expectedNumber(out_k, positions.length)
+    );
   if (!validator.allInRange(positions, 1, n))
     return handleInvalid(
       messageGenerator.outOfRange(1, n, positions.join(", "))
@@ -62,7 +66,7 @@ function handleAnswer(req) {
     return handleInvalid(messageGenerator.noDuplicates());
   const posMatch = positions.filter((value) => imposIds.includes(value));
   return {
-    answer: k === out_k ? ANSWER.OK : ANSWER.PARTIAL,
+    answer: posMatch.length === out_k ? ANSWER.OK : ANSWER.PARTIAL,
     posMatch,
     accuracy: (posMatch.length / k).toFixed(6),
   };
@@ -77,6 +81,7 @@ function handleSolution(req) {
 
 module.exports = {
   getResult,
+  getNumImposters,
   handleQuestion,
   handleAnswer,
   handleSolution,
