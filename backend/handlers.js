@@ -31,6 +31,16 @@ function handleQues(arr) {
       message: "Expected 3 numbers, but got " + arr.length,
     };
   const positions = arr.map((value) => parseInt(value));
+  if (positions.some((value) => !Number.isInteger(value)))
+    return {
+      answer: "INVALID",
+      message: "Only integers are allowed",
+    };
+  if (positions.some((value) => value < 1 || value > n))
+    return {
+      answer: "INVALID",
+      message: `Numbers should be between 1 and ${n}`,
+    };
   if (hasDuplicate(positions))
     return {
       answer: "INVALID",
