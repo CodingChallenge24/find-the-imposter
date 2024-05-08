@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const getResult = require("./handlers");
+const { getResult } = require("./handlers");
 const { hasDuplicate } = require("./validator");
 
 const PORT = process.env.PORT || 3000;

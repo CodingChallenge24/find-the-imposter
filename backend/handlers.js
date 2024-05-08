@@ -77,4 +77,10 @@ function handleAns(arr) {
   };
 }
 
-module.exports = getResult;
+module.exports = {
+  TYPE,
+  getResult,
+  getNumImposters,
+  handleQues,
+  handleAns,
+};
