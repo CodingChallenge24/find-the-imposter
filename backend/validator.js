@@ -10,4 +10,8 @@ function allIntegers(arr) {
   return arr.every((value) => Number.isInteger(value));
 }
 
-module.exports = { hasDuplicate, allInRange, allIntegers };
+function expectedNumber(expected, got) {
+  return expected === got;
+}
+
+module.exports = { hasDuplicate, allInRange, allIntegers, expectedNumber };

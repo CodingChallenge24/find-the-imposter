@@ -1,86 +1,84 @@
+const { QUERY_TYPE, ANSWER } = require("./consts");
 const { n, k, imposIds } = require("./data");
-const val = require("./validator");
-
-const TYPE = Object.freeze({ QUESTION: "?", ANSWER: "!", SOLUTION: "=" });
-
-function getNumImposters(arr) {
-  return arr.reduce(
-    (acc, value) => acc + (imposIds.includes(value) ? 1 : 0),
-    0
-  );
-}
+const messageGenerator = require("./messages");
+const validator = require("./validator");
 
 function getResult(query) {
-  const parts = query.split(" ");
-  let result;
-  switch (parts[0]) {
-    case TYPE.QUESTION:
-      result = handleQues(parts.slice(1));
-      break;
-    case TYPE.ANSWER:
-      result = handleAns(parts.slice(1));
-      break;
-    case TYPE.SOLUTION:
-      result = { answer: "OK", solution: { n, k, imposIds } };
-      break;
-    default:
-      result = { message: "Invalid query" };
-      break;
-  }
-  if (result.message) result = { answer: "INVALID", ...result };
-  return result;
+  const [type, ...data] = query.split(" ");
+  return handleQueryType({ type, data });
 }
 
-function handleQues(arr) {
-  const positions = arr.map((value) => parseInt(value));
-  if (!val.allIntegers(positions))
-    return {
-      message: "Only integers are allowed",
-    };
-  if (!val.allInRange(positions, 1, n))
-    return {
-      message: `Numbers should be between 1 and ${n}`,
-    };
-  if (val.hasDuplicate(positions))
-    return {
-      message: "Duplicate numbers are not allowed",
-    };
-  if (arr.length !== 3)
-    return {
-      message: "Expected 3 numbers, but got " + arr.length,
-    };
+function getNumImposters(positions) {
+  return positions.filter((value) => imposIds.includes(value)).length;
+}
+
+function handleQueryType(req) {
+  switch (req.type) {
+    case QUERY_TYPE.QUESTION:
+      return handleQuestion(req);
+    case QUERY_TYPE.ANSWER:
+      return handleAnswer(req);
+    case QUERY_TYPE.SOLUTION:
+      return handleSolution(req);
+    default:
+      return handleInvalid(messageGenerator.queryTypeNotSupported(req.type));
+  }
+}
+
+function handleInvalid(message) {
   return {
-    answer: getNumImposters(positions) > 1 ? "MORE" : "LESS",
+    answer: ANSWER.INVALID,
+    message,
   };
 }
 
-function handleAns(arr) {
-  arr = arr.map((value) => parseInt(value));
-  if (!val.allIntegers(arr))
-    return {
-      message: "Only integers are allowed",
-    };
-  const [out_k, ...positions] = arr;
-  if (!val.allInRange(positions, 1, n))
-    return {
-      message: `Numbers should be between 1 and ${n}`,
-    };
-  if (val.hasDuplicate(positions))
-    return {
-      message: "Duplicate numbers are not allowed",
-    };
+function handleQuestion(req) {
+  if (!validator.expectedNumber(3, req.data.length))
+    return handleInvalid(messageGenerator.expectedNumber(3, req.data.length));
+  const positions = req.data.map((value) => parseInt(value));
+  if (!validator.allIntegers(positions))
+    return handleInvalid(messageGenerator.allowOnlyIntegers());
+  if (!validator.allInRange(positions, 1, n))
+    return handleInvalid(
+      messageGenerator.outOfRange(1, n, positions.join(", "))
+    );
+  if (validator.hasDuplicate(positions))
+    return handleInvalid(messageGenerator.noDuplicates());
+  return {
+    answer: getNumImposters(positions) > 1 ? ANSWER.MORE : ANSWER.LESS,
+  };
+}
+
+function handleAnswer(req) {
+  const tmp = req.data.map((value) => parseInt(value));
+  if (!validator.allIntegers(tmp))
+    return handleInvalid(messageGenerator.allowOnlyIntegers());
+  const [out_k, ...positions] = tmp;
+  if (!validator.allInRange(positions, 1, n))
+    return handleInvalid(
+      messageGenerator.outOfRange(1, n, positions.join(", "))
+    );
+  if (validator.hasDuplicate(positions))
+    return handleInvalid(messageGenerator.noDuplicates());
   const posMatch = positions.filter((value) => imposIds.includes(value));
   return {
-    answer: posMatch.length === k ? "OK" : "PARTIAL",
+    answer: k === out_k ? ANSWER.OK : ANSWER.PARTIAL,
     posMatch,
     accuracy: (posMatch.length / k).toFixed(6),
   };
 }
 
+function handleSolution(req) {
+  return {
+    answer: ANSWER.OK,
+    solution: { n, k, imposIds },
+  };
+}
+
 module.exports = {
-  TYPE,
   getResult,
-  getNumImposters,
-  handleQues,
-  handleAns,
+  handleQuestion,
+  handleAnswer,
+  handleSolution,
+  handleInvalid,
 };
