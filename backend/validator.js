@@ -2,4 +2,12 @@ function hasDuplicate(arr) {
   return new Set(arr).size !== arr.length;
 }
 
-module.exports = { hasDuplicate };
+function allInRange(arr, l, r) {
+  return arr.every((value) => l <= value && value <= r);
+}
+
+function allIntegers(arr) {
+  return arr.every((value) => Number.isInteger(value));
+}
+
+module.exports = { hasDuplicate, allInRange, allIntegers };

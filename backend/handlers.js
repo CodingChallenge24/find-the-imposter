@@ -1,5 +1,5 @@
 const { n, k, imposIds } = require("./data");
-const { hasDuplicate } = require("./validator");
+const val = require("./validator");
 
 const TYPE = Object.freeze({ QUESTION: "?", ANSWER: "!", SOLUTION: "=" });
 
@@ -25,26 +25,26 @@ function getResult(query) {
 }
 
 function handleQues(arr) {
-  if (arr.length !== 3)
-    return {
-      answer: "INVALID",
-      message: "Expected 3 numbers, but got " + arr.length,
-    };
   const positions = arr.map((value) => parseInt(value));
-  if (positions.some((value) => !Number.isInteger(value)))
+  if (!val.allIntegers(positions))
     return {
       answer: "INVALID",
       message: "Only integers are allowed",
     };
-  if (positions.some((value) => value < 1 || value > n))
+  if (!val.allInRange(positions, 1, n))
     return {
       answer: "INVALID",
       message: `Numbers should be between 1 and ${n}`,
     };
-  if (hasDuplicate(positions))
+  if (val.hasDuplicate(positions))
     return {
       answer: "INVALID",
       message: "Duplicate numbers are not allowed",
+    };
+  if (arr.length !== 3)
+    return {
+      answer: "INVALID",
+      message: "Expected 3 numbers, but got " + arr.length,
     };
   return {
     answer: getNumImposters(positions) > 1 ? "MORE" : "LESS",
@@ -52,8 +52,19 @@ function handleQues(arr) {
 }
 
 function handleAns(arr) {
-  const [out_k, ...positions] = arr.map((value) => parseInt(value));
-  if (hasDuplicate(positions))
+  arr = arr.map((value) => parseInt(value));
+  if (!val.allIntegers(arr))
+    return {
+      answer: "INVALID",
+      message: "Only integers are allowed",
+    };
+  const [out_k, ...positions] = arr;
+  if (!val.allInRange(positions, 1, n))
+    return {
+      answer: "INVALID",
+      message: `Numbers should be between 1 and ${n}`,
+    };
+  if (val.hasDuplicate(positions))
     return {
       answer: "INVALID",
       message: "Duplicate numbers are not allowed",
