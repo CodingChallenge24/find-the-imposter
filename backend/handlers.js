@@ -48,11 +48,12 @@ function handleAns(arr) {
       answer: "INVALID",
       message: "Duplicate numbers are not allowed",
     };
-  const numImposters = positions.reduce(
-    (acc, value) => acc + (imposIds.includes(value) ? 1 : 0),
-    0
-  );
-  return { answer: numImposters };
+  const posMatch = positions.filter((value) => imposIds.includes(value));
+  return {
+    answer: posMatch.length === k ? "OK" : "PARTIAL",
+    posMatch,
+    accuracy: (posMatch.length / k).toFixed(6),
+  };
 }
 
 module.exports = getResult;

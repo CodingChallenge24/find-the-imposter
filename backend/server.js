@@ -19,8 +19,10 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
-app.post("/ask", ({ body: { query } }, res) => {
-  res.json(getResult(query));
+app.post("/ask", ({ body: { query, test } }, res) => {
+  const result = getResult(query);
+  if (test) res.render("index", { result: JSON.stringify(result) });
+  else res.json(result);
 });
 
 app.listen(PORT, () => {

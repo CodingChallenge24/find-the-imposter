@@ -10,9 +10,10 @@
     <h2>Query</h2>
     <form action="http://localhost:3000/ask" method="post">
       <input name="query" />
+      <input name="test" value="test" hidden />
       <button type="submit">Submit</button>
     </form>
-    <h2>Response</h2>
-    <p><%= locals.resObj || 'default'%></p>
+    <h2>Result</h2>
+    <p><%= locals.result || 'Have no result'%></p>
   </body>
 </html>
