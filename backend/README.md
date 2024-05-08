@@ -4,6 +4,19 @@
 
 **Port default:** 3000 _(can be changed by adding `.env` file with `PORT` variable inside)_
 
+### Install dependencies
+
+```bash
+$ npm i
+```
+
+### Start the server
+
+```bash
+$ npm start # use for production
+$ npm run dev # use for development
+```
+
 ## Data example
 
 ```json
@@ -136,6 +149,29 @@ If `answer` is `INVALID`, then there is a key `messsage` which contains the erro
   "answer": "OK",
   "posMatch": [1, 2, 4],
   "accuracy": 1.000000
+}
+```
+
+#### Get the solution
+
+**Format**:
+
+```json
+{
+  "query": "="
+}
+```
+
+**Response**:
+
+```json
+{
+  "answer": "OK",
+  "solution": {
+    "n": 6,
+    "k": 3,
+    "imposIds": [1, 2, 4]
+  }
 }
 ```
 
