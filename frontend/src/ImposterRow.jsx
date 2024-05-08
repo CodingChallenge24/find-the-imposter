@@ -1,5 +1,6 @@
 import { useState } from 'react'
-
+import personBlack from './assets/peopleBlack.png'
+import personRed from './assets/peopleRed.png'
 
 function IconButton({id}) {
 
@@ -13,7 +14,9 @@ function IconButton({id}) {
         return (
             <div className='innerCell'>
                 <h4>{id}</h4>
-                <button onClick={handleClick}>🙋‍♂️</button>
+                <button className="buttonCell" onClick={handleClick}>
+                    <img className="icon" src={personBlack} />
+                </button>
             </div>
         )
     }
@@ -21,7 +24,9 @@ function IconButton({id}) {
         return (
             <div className='innerCell'>
                 <h4>{id}</h4>
-                <button onClick={handleClick}>👲</button>
+                <button className="buttonCell" onClick={handleClick}>
+                    <img className="icon" src={personRed} />
+                </button>
             </div>
         )
     }
@@ -32,10 +37,11 @@ export default function ImposterRow({ noImposter }) { // noImposter is the numbe
 
     let row = [];
     let index = 0
-    for (let j = 0; j <= (noImposter - 1) / 10; j ++) {
+    const perRow = 30;
+    for (let j = 0; j <= (noImposter - 1) / perRow; j ++) {
         let imposters = [];
 
-        let cnt = Math.min(noImposter - j * 10, 10);
+        let cnt = Math.min(noImposter - j * perRow, perRow);
         for (let i = 0; i < cnt; i ++) {
             imposters.push(<IconButton id = {index + 1}/>);
             index ++;

@@ -9,7 +9,7 @@ function App() {
 
   return (
     <>
-        <ImposterRow noImposter={5}/>
+      <ImposterRow noImposter={15}/>
     </>
   )
 }

@@ -42,9 +42,23 @@
 }
 
 #ImposterRow {
-  display: table;
+  display: table-row;
+  max-width: 100%;
+  position: relative;
 }
 
 .innerCell {
   display: table-cell;
+}
+
+.buttonCell {
+  padding: 0px;
+  max-width: 2.75em;
+  max-height: 10em;
+}
+
+.icon {
+  max-width: 2.75em;
+  max-height: 10em;
+  border: 0px;
 }
