@@ -1,19 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
 import './App.css'
-import UserBar from '../src/UserBar.jsx'
-
+import { socket } from './socket.js'
+import ParticipantPage from './ParticipantPage.jsx';
+import Timer from './Timer.jsx';
 function App() {
-  const [count, setCount] = useState(0)
+  const [isConnected, setIsConnected] = useState(socket.connected);
+
+  useEffect(() => {
+    function onConnect() {
+      setIsConnected(true);
+    }
+
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    socket.connect();
+
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <>
-      <UserBar userName="Player 1" noImposter={30} choosingMask={7} displayText="A" />
-      <UserBar userName="Player 2" noImposter={30} choosingMask={12} displayText="B" />
-      <UserBar userName="Player 3" noImposter={30} choosingMask={42512} displayText="C" />
-      <UserBar userName="Player 4" noImposter={30} choosingMask={5224} displayText="D" />
-      <div id="logo"></div>
+      <h1>{isConnected ? 'Connected' : 'Disconnected'}</h1>
+      <ParticipantPage name="Alice" id="1" noImposter={30} />
+      {/* <Timer time={300} /> */}
     </>
   )
 }
