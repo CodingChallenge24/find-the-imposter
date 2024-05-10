@@ -2,7 +2,7 @@
 
 ## How to use
 
-**Port default:** 3000 _(can be changed by adding `.env` file with `PORT` variable inside)_
+**Port default:** 4000 _(can be changed by adding `.env` file with `PORT` variable inside)_
 
 ### Install dependencies
 
@@ -35,11 +35,19 @@ The above JSON object represents the following data:
 
 ### Query
 
-#### API
+#### Send
 
-**http://localhost:3000/ask**
+```javascript
+socket.emit('query', { query });
+```
 
-Accept a POST request with a JSON body containing the `query` key which has a string value.
+#### Receive
+
+```javascript
+socket.on('query', (data) => {
+  // data
+});
+```
 
 #### Give question
 
@@ -174,7 +182,3 @@ If `answer` is `INVALID`, then there is a key `messsage` which contains the erro
   }
 }
 ```
-
-## Testing with UI
-
-Access **http://localhost:3000/** to test the API with a simple UI.
