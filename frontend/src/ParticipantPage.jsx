@@ -7,6 +7,7 @@ import { socket } from "./socket.js";
 
 
 function HistoryBox({history}) {
+    // console.log(history)
     return (
         <div id="historyBox">
             {history.map((item, index) => (
@@ -28,18 +29,18 @@ function QueryBox({ query, setQuery, history, name, id}) {
     function handleSubmit(event) {
         event.preventDefault();
         setQuery(input);
-        // alert(`Query: ${input}`);
-        // console.log('{"query": "' + input + '"}')
-        // const myQuery = JSON.stringify({query: input})
-        // socket.emit('ask', myQuery);
-        // socket.on('ask', (data) => {
-        //     console.log(data)
-        // })
-        // alert(history)
 
-        history.push(`${input}`);
+        socket.emit('query', {query: input});
 
-        setInput('');
+
+        socket.on('query', (data) => {
+            const ans = data['answer']
+            // alert(`Query: ${input} ${ans}`);
+            history.push(`${input} ${ans}`);
+            setInput('');
+            socket.off('query');
+        }
+        )
     }
 
     return (
@@ -61,7 +62,16 @@ function AnswerBox({name, id}) {
     }
 
     function handleSubmit(event) {
-        alert(`Answer: ${input}`);
+        // alert(`Answer: ${input}`);
+        event.preventDefault();
+        socket.emit('query', {query: input});
+        socket.on('query', (data) => {
+            const ans = data['answer']
+            const accuracy = data['accuracy']
+            const posMatch = data['posMatch']
+            alert(`Answer: ${ans}\nAccuracy: ${accuracy}\nPosition Match: ${posMatch}`);
+            socket.off('query');
+        })
     }
 
     const buttStyle = {

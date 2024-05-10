@@ -48,8 +48,6 @@ export default function ImposterRow({ noImposter }) { // noImposter is the numbe
         }
         row.push(<div className='ImposterRow'>{imposters}</div>)
     }
-
-    console.log(row);
     return (
         <div className='ImposterTable'>
             <h2>Flag section</h2>
