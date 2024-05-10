@@ -37,7 +37,7 @@ function QueryBox({ query, setQuery, history, name, id}) {
         // })
         // alert(history)
 
-
+        history.push(`${input}`);
 
         setInput('');
     }
