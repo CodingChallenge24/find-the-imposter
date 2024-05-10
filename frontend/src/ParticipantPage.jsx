@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImposterRow from '../src/ImposterRow.jsx'
 import Timer from '../src/Timer.jsx'
 import { socket } from "./socket.js";
@@ -22,6 +22,16 @@ function QueryBox({ query, setQuery, history, name, id}) {
 
     const [input, setInput] = useState(query);
 
+    useEffect(() => {
+        socket.on('ask', (data) => {
+            console.log(data)
+        })
+
+        return () => {
+            socket.off('ask');
+        }
+    }, [])
+
     function handleChange(event) {
         setInput(event.target.value);
     }
@@ -29,8 +39,16 @@ function QueryBox({ query, setQuery, history, name, id}) {
     function handleSubmit(event) {
         event.preventDefault();
         setQuery(input);
+<<<<<<< HEAD
 
         socket.emit('query', {query: input});
+=======
+        alert(`Query: ${input}`);
+        console.log('{"query": "' + input + '"}')
+        const myQuery = JSON.stringify({query: input})
+        socket.emit('ask', myQuery);
+        history.push(`${input}`);
+>>>>>>> f91d41dde79617735490ad1db2b5c9d1633a875b
 
 
         socket.on('query', (data) => {
