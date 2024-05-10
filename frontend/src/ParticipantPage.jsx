@@ -22,12 +22,12 @@ function QueryBox({ query, setQuery, history, name, id}) {
     const [input, setInput] = useState(query);
 
     useEffect(() => {
-        socket.on('ask', (data) => {
+        socket.on('query', (data) => {
             console.log(data)
         })
 
         return () => {
-            socket.off('ask');
+            socket.off('query');
         }
     }, [])
 
@@ -41,7 +41,7 @@ function QueryBox({ query, setQuery, history, name, id}) {
         alert(`Query: ${input}`);
         console.log('{"query": "' + input + '"}')
         const myQuery = JSON.stringify({query: input})
-        socket.emit('ask', myQuery);
+        socket.emit('query', myQuery);
         history.push(`${input}`);
 
         setInput('');
