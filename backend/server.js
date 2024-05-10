@@ -23,8 +23,15 @@ io.on('connect', (socket) => {
   console.log(`${username} is connected.`);
 
   socket.on('query', (data) => {
-    console.log(`${username} asks interactor with query "${data.query}"`);
-    socket.emit('query', getResult(data.query));
+    if (typeof data.query === 'string') {
+      const query = data.query.trim();
+      console.log(`${username} asks interactor with query "${query}"`);
+      socket.emit('query', getResult(query));
+    } else {
+      console.log(
+        `${username} asks interactor with query which is not a string "${data.query}"`,
+      );
+    }
   });
 
   socket.on('disconnect', () => {
