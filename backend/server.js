@@ -2,7 +2,7 @@ const { Server } = require('socket.io');
 const { createServer } = require('http');
 
 const express = require('express');
-const { getResult } = require('./handlers');
+const getResult = require('./src/interactor');
 
 const PORT = process.env.PORT || 4000;
 
