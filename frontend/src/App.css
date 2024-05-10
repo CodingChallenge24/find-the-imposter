@@ -134,7 +134,7 @@
 
 #box2 {
   display: flex;
-  align-items: first baseline;
+  align-items: last baseline;
   /* width: 600px; */
   justify-content: space-between;
 }
@@ -157,4 +157,24 @@
   padding: 0em;
   max-width: 500px;
   margin: 0 auto;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* float: right; */
+  padding: 0em;
+  width: 500px;
+  height: 90px;
+  margin: 2em auto;
+  align-items: right;
+  border: solid black 1px;
+  border-radius: 5px;
+}
+
+.info {
+  float: right;
+  text-align: left;
+  margin: 5px
 }

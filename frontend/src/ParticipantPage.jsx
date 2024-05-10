@@ -1,6 +1,10 @@
 import { useState } from "react";
 import ImposterRow from '../src/ImposterRow.jsx'
 import Timer from '../src/Timer.jsx'
+import { socket } from "./socket.js";
+// import { Socket } from "socket.io-client";
+
+
 
 function HistoryBox({history}) {
     return (
@@ -13,7 +17,7 @@ function HistoryBox({history}) {
 }
 
 
-function QueryBox({ query, setQuery, history }) {
+function QueryBox({ query, setQuery, history, name, id}) {
 
     const [input, setInput] = useState(query);
 
@@ -25,8 +29,16 @@ function QueryBox({ query, setQuery, history }) {
         event.preventDefault();
         setQuery(input);
         // alert(`Query: ${input}`);
-        history.push(input);
-        alert(history)
+        // console.log('{"query": "' + input + '"}')
+        // const myQuery = JSON.stringify({query: input})
+        // socket.emit('ask', myQuery);
+        // socket.on('ask', (data) => {
+        //     console.log(data)
+        // })
+        // alert(history)
+
+
+
         setInput('');
     }
 
@@ -42,7 +54,7 @@ function QueryBox({ query, setQuery, history }) {
 }
 
 
-function AnswerBox() {
+function AnswerBox({name, id}) {
     const [input, setInput] = useState('');
     function handleChange(event) {
         setInput(event.target.value);
@@ -75,9 +87,13 @@ export default function ParticipantPage({name, id, noImposter}) {
         <>
             <ImposterRow noImposter={noImposter}/>
             <div id = "box2">
-                <QueryBox query="" setQuery={console.log} history={history}/>
+                <QueryBox query="" setQuery={console.log} history={history} name ={name} id ={id}/>
                 <div>
-                    <AnswerBox/>
+                    <div className="userInfo">
+                        <h4 className="info">{`Username: ${name}`}</h4>
+                        <h4 className="info">{`User ID: ${id}`}</h4>
+                    </div>
+                    <AnswerBox name ={name} id ={id}/>
                     <Timer time={300}/>
                 </div>
             </div>

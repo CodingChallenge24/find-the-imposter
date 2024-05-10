@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import { socket } from './socket.js'
 import ParticipantPage from './ParticipantPage.jsx';
-import Timer from './Timer.jsx';
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
 
