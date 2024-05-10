@@ -22,9 +22,9 @@ io.on('connect', (socket) => {
   const username = `User ${socket.id.toString().slice(0, 6)}`;
   console.log(`${username} is connected.`);
 
-  socket.on('interact', (query) => {
-    console.log(`${username} asks interactor with query "${query}"`);
-    socket.emit('interact', getResult(query));
+  socket.on('query', (data) => {
+    console.log(`${username} asks interactor with query "${data.query}"`);
+    socket.emit('query', getResult(data.query));
   });
 
   socket.on('disconnect', () => {
