@@ -26,7 +26,6 @@ const Timer = ({ time }) => {
         width: "90px",
         height: "35px",
         border: "1px solid black",
-        float: "right",
         margin: "5px",
     }
 
@@ -36,9 +35,12 @@ const Timer = ({ time }) => {
     }
 
     return (
-        <div style={timerStyle}>
-            <span style={textStyle}>{minutes < 10 ? `0${minutes}` : minutes}</span><span style={textStyle}> : </span>
-            <span style={textStyle}>{remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds}</span>
+        <div className='flex items-center'>
+            <p>Time left:</p>
+            <div style={timerStyle}>
+                <span style={textStyle}>{minutes < 10 ? `0${minutes}` : minutes}</span><span style={textStyle}> : </span>
+                <span style={textStyle}>{remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds}</span>
+            </div>
         </div>
     );
 };

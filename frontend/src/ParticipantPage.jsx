@@ -1,36 +1,49 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ImposterRow from '../src/ImposterRow.jsx'
 import Timer from '../src/Timer.jsx'
 import { socket } from "./socket.js";
 // import { Socket } from "socket.io-client";
+import './App.css'
 
 
 
 function HistoryBox({history}) {
     // console.log(history)
     return (
-        <div id="historyBox">
-            {history.map((item, index) => (
-                <p key={index} style={{backgroundColor: index % 2 === 0 ? "lightgray" : "white", margin: "1px", padding: "1px"}}>{item}</p>
-            ))}
-        </div>
+        <>
+            <h4 className="text-lg">Query history</h4>
+            <div id="historyBox" className="rounded-md">
+                {history.map((item, index) => (
+                    <p key={index} style={{backgroundColor: index % 2 === 0 ? "lightgray" : "white", margin: "1px", padding: "1px"}}>{item}</p>
+                ))}
+            </div>
+        </>
     );
 }
 
 
-function QueryBox({ query, setQuery, history, name, id}) {
-
-    const [input, setInput] = useState(query);
+function QueryBox({name, id}) {
+    const [input, setInput] = useState("");
+    const [history, setHistory] = useState([]);
 
     useEffect(() => {
         socket.on('ask', (data) => {
             console.log(data)
         })
 
+        socket.on('query', (data) => {
+            console.log(input);
+            const ans = data['answer']
+            // alert(`Query: ${input} ${ans}`);
+            setHistory(prev => [...prev, `${input} ${ans}`]);
+            setInput('');
+        });
+
         return () => {
             socket.off('ask');
+            socket.off('query');
         }
-    }, [])
+    }, [input])
 
     function handleChange(event) {
         setInput(event.target.value);
@@ -38,34 +51,20 @@ function QueryBox({ query, setQuery, history, name, id}) {
 
     function handleSubmit(event) {
         event.preventDefault();
-        setQuery(input);
-<<<<<<< HEAD
-
-        socket.emit('query', {query: input});
-=======
+        // setQuery(input);
         alert(`Query: ${input}`);
         console.log('{"query": "' + input + '"}')
-        const myQuery = JSON.stringify({query: input})
-        socket.emit('ask', myQuery);
-        history.push(`${input}`);
->>>>>>> f91d41dde79617735490ad1db2b5c9d1633a875b
-
-
-        socket.on('query', (data) => {
-            const ans = data['answer']
-            // alert(`Query: ${input} ${ans}`);
-            history.push(`${input} ${ans}`);
-            setInput('');
-            socket.off('query');
-        }
-        )
+        const myQuery = JSON.parse(`{"query": "${input}"}`)
+        socket.emit('query', myQuery);
+        setHistory(prev => [...prev, input]);
     }
 
     return (
         <div id ="box1">
             <HistoryBox history={history}/>
-            <form id="queryForm" onSubmit={handleSubmit}>
-                <input id="queryBox" type="text" value={input} onChange={handleChange} />
+            <form id="queryForm" className="flex gap-2 mt-2" onSubmit={handleSubmit}>
+                <label className="text-lg" htmlFor="queryBox">Ask:</label>
+                <input className="w-full" placeholder="? 1 2 3" type="text" value={input} onChange={handleChange} />
                 <button type="submit">Send</button>
             </form>
         </div>
@@ -92,39 +91,36 @@ function AnswerBox({name, id}) {
         })
     }
 
-    const buttStyle = {
-        margin: "5px",
-        borderRadius: "3px",
-        border: "1px solid black",
-        width: "90px",
-    }
-
     return (
-        <form id="answerForm" onSubmit={handleSubmit}>
-            <input id="answerBox" type="text" value={input} onChange={handleChange} />
-            <button type="submit" style={buttStyle}>Answer</button>
+        <form className="flex gap-2 mt-2" onSubmit={handleSubmit}>
+            <label htmlFor="answerBox">Answer:</label>
+            <input className="w-full" id="answerBox" placeholder="! 30" type="text" value={input} onChange={handleChange} />
+            <button type="submit">Send</button>
         </form>
     )
 }
 
-export default function ParticipantPage({name, id, noImposter}) {
+export default function ParticipantPage() {
+    useEffect(() => {
+        socket.connect();
+        return () => {
+            socket.disconnect();
+        }
+    }, [])
 
-    let history = []
-
+    const user = JSON.parse(localStorage.getItem('user'));
     return (
-        <>
-            <ImposterRow noImposter={noImposter}/>
-            <div id = "box2">
-                <QueryBox query="" setQuery={console.log} history={history} name ={name} id ={id}/>
+        <section>
+            <p>Thí sinh: {user.fullname} </p>
+            <h2 className='text-3xl mb-6'>Flag section</h2>
+            <ImposterRow noImposter={30}/>
+            <div className="flex justify-center mt-8">
                 <div>
-                    <div className="userInfo">
-                        <h4 className="info">{`Username: ${name}`}</h4>
-                        <h4 className="info">{`User ID: ${id}`}</h4>
-                    </div>
-                    <AnswerBox name ={name} id ={id}/>
+                    <QueryBox name ={user.fullname} id ={user.id}/>
+                    <AnswerBox name ={user.fullname} id ={user.id}/>
                     <Timer time={300}/>
                 </div>
             </div>
-        </>
+        </section>
     )
 }
