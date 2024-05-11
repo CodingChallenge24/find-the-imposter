@@ -1,12 +1,21 @@
 const { Server } = require('socket.io');
 const { createServer } = require('http');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const express = require('express');
 const getResult = require('./src/interactor');
+const { auth } = require('./auth');
 
 const PORT = process.env.PORT || 4000;
 
-const httpServer = createServer(express);
+const app = express();
+app.use(bodyParser.json());
+app.use(cors());
+
+app.post('/login', auth);
+
+const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
   cors: {
@@ -23,6 +32,7 @@ io.on('connect', (socket) => {
   console.log(`${username} is connected.`);
 
   socket.on('query', (data) => {
+    console.log(typeof data);
     if (typeof data.query === 'string') {
       const query = data.query.trim();
       console.log(`${username} asks interactor with query "${query}"`);

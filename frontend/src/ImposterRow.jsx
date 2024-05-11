@@ -10,26 +10,14 @@ function IconButton({id}) {
         setCount((count + 1) % 2);
     }
 
-    if (count === 0) {
-        return (
-            <div className='innerCell'>
-                <h4>{id}</h4>
-                <button className="buttonCell" onClick={handleClick}>
-                    <img className="icon" src={personBlack} />
-                </button>
-            </div>
-        )
-    }
-    else {
-        return (
-            <div className='innerCell'>
-                <h4>{id}</h4>
-                <button className="buttonCell" onClick={handleClick}>
-                    <img className="icon" src={personRed} />
-                </button>
-            </div>
-        )
-    }
+    return (
+        <div className='innerCell'>
+            <h4 className='text-2xl'>{id}</h4>
+            <button className="p-2 bg-slate-300 w-[50px]" onClick={handleClick}>
+                <img className='w-full' src={count === 0 ? personBlack : personRed} />
+            </button>
+        </div>
+    )
 }
 
 
@@ -46,13 +34,10 @@ export default function ImposterRow({ noImposter }) { // noImposter is the numbe
             imposters.push(<IconButton id = {index + 1}/>);
             index ++;
         }
-        row.push(<div className='ImposterRow'>{imposters}</div>)
+        row.push(<div className='ImposterRow flex flex-wrap gap-4 justify-center'>{imposters}</div>)
     }
-
-    console.log(row);
     return (
-        <div className='ImposterTable'>
-            <h2>Flag section</h2>
+        <div className='ImposterTable w-full'>
             {row}
         </div>
     )
