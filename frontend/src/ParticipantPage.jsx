@@ -53,11 +53,9 @@ function QueryBox({name, id}) {
         // setQuery(input);
         alert(`Query: ${input}`);
         console.log('{"query": "' + input + '"}')
-        const myQuery = JSON.stringify({query: input})
-        socket.emit('query', myQuery);
-        history.push(`${input}`);
-
-        setInput('');
+        // const myQuery = JSON.stringify({query: input})
+        socket.emit('query', {query: input});
+        // history.push(`${input}`);
     }
 
     return (
