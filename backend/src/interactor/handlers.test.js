@@ -107,5 +107,13 @@ describe('handlers', () => {
         message: messageGenerator.noDuplicates(),
       });
     });
+    it('returns an object with an INVALID answer and a redundant imposters message', () => {
+      const req = { type: QUERY_TYPE.ANSWER, data: [6, 1, 2, 3, 4, 5, 6] };
+      const result = handlers.handleAnswer(req);
+      expect(result).toEqual({
+        answer: ANSWER.INVALID,
+        message: messageGenerator.getMoreThanSolution(imposIds.length, 6),
+      });
+    });
   });
 });

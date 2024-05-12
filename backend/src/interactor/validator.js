@@ -14,4 +14,17 @@ function expectedNumber(expected, got) {
   return expected === got;
 }
 
-module.exports = { hasDuplicate, allInRange, allIntegers, expectedNumber };
+function hasMoreThan(arrTarget, arrRef) {
+  return (
+    arrTarget.length > arrRef.length &&
+    arrRef.every((value) => arrTarget.includes(value))
+  );
+}
+
+module.exports = {
+  hasDuplicate,
+  allInRange,
+  allIntegers,
+  expectedNumber,
+  hasMoreThan,
+};
