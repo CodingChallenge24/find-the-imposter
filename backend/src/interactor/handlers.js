@@ -70,7 +70,7 @@ function handleAnswer(req) {
     );
   const posMatch = positions.filter((value) => imposIds.includes(value));
   return {
-    answer: posMatch.length === out_k ? ANSWER.OK : ANSWER.PARTIAL,
+    answer: posMatch.length === k ? ANSWER.OK : ANSWER.PARTIAL,
     posMatch,
     accuracy: (posMatch.length / k).toFixed(6),
   };
