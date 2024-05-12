@@ -5,7 +5,21 @@ import { socket } from "./socket.js";
 // import { Socket } from "socket.io-client";
 import './App.css'
 
+// function validateQuery(query) {
+//     s = query.replace(/\s+/g, ' ').trim()
+//     if (s[0] !== '?') {
+//         return false;
+//     }
+//     return true;
+// }
 
+// function validateAnswer(answer) {
+//     s = answer.replace(/\s+/g, ' ').trim()
+//     if (s[0] !== '!') {
+//         return false;
+//     }
+//     return false;
+// }
 
 function HistoryBox({history}) {
     // console.log(history)
@@ -22,12 +36,12 @@ function HistoryBox({history}) {
 }
 
 
-function QueryBox({name, id}) {
+function QueryBox({name, id, isFreeze=false}) {
     const [input, setInput] = useState("");
     const [history, setHistory] = useState([]);
 
     useEffect(() => {
-        socket.on('query', (data) => {
+        socket.on('ask', (data) => {
             console.log(data)
         })
 
@@ -41,6 +55,7 @@ function QueryBox({name, id}) {
 
         return () => {
             socket.off('query');
+            socket.off('ask');
         }
     }, [input])
 
@@ -58,27 +73,46 @@ function QueryBox({name, id}) {
         // history.push(`${input}`);
     }
 
-    return (
-        <div id ="box1">
-            <HistoryBox history={history}/>
-            <form id="queryForm" className="flex gap-2 mt-2" onSubmit={handleSubmit}>
-                <label className="text-lg" htmlFor="queryBox">Ask:</label>
-                <input className="w-full" placeholder="? 1 2 3" type="text" value={input} onChange={handleChange} />
-                <button type="submit">Send</button>
-            </form>
-        </div>
-    );
+
+    if (isFreeze) {
+        return (
+            <div id ="box1">
+                <HistoryBox history={history}/>
+                <form id="queryForm" className="flex gap-2 mt-2" onSubmit={(even)=>{even.preventDefault();}}>
+                    <label className="text-lg" htmlFor="queryBox">Ask:</label>
+                    <input className="w-full" placeholder="? 1 2 3" type="text" value={input} onChange={handleChange} />
+                    <button type="submit">Freezed</button>
+                </form>
+            </div>
+        );
+    } else {
+
+        return (
+            <div id ="box1">
+                <HistoryBox history={history}/>
+                <form id="queryForm" className="flex gap-2 mt-2" onSubmit={handleSubmit}>
+                    <label className="text-lg" htmlFor="queryBox">Ask:</label>
+                    <input className="w-full" placeholder="? 1 2 3" type="text" value={input} onChange={handleChange} />
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+        );
+    }
 }
 
 
-function AnswerBox({name, id}) {
+function AnswerBox({name, id, isFreeze=false}) {
     const [input, setInput] = useState('');
     function handleChange(event) {
         setInput(event.target.value);
     }
 
     function handleSubmit(event) {
+
+
         // alert(`Answer: ${input}`);
+
+
         event.preventDefault();
         socket.emit('query', {query: input});
         socket.on('query', (data) => {
@@ -90,22 +124,45 @@ function AnswerBox({name, id}) {
         })
     }
 
-    return (
-        <form className="flex gap-2 mt-2" onSubmit={handleSubmit}>
-            <label htmlFor="answerBox">Answer:</label>
-            <input className="w-full" id="answerBox" placeholder="! 30" type="text" value={input} onChange={handleChange} />
-            <button type="submit">Send</button>
-        </form>
-    )
+    if (isFreeze) {
+        return (
+            <form className="flex gap-2 mt-2" onSubmit={(even)=>{even.preventDefault();}}>
+                <label htmlFor="answerBox">Answer:</label>
+                <input className="w-full" id="answerBox" placeholder="! 1 30" type="text" value={input} onChange={handleChange} />
+                <button type="submit">Freezed</button>
+            </form>
+        )
+    } else {
+
+        return (
+            <form className="flex gap-2 mt-2" onSubmit={handleSubmit}>
+                <label htmlFor="answerBox">Answer:</label>
+                <input className="w-full" id="answerBox" placeholder="! 1 30" type="text" value={input} onChange={handleChange} />
+                <button type="submit">Send</button>
+            </form>
+        )
+    }
 }
 
-export default function ParticipantPage() {
+export default function ParticipantPage({timeSec}) {
     useEffect(() => {
         socket.connect();
         return () => {
             socket.disconnect();
         }
     }, [])
+
+    const [isFreeze, setIsFreeze] = useState(false);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setIsFreeze(true);
+        }, timeSec * 1000);
+
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, []);
 
     const user = JSON.parse(localStorage.getItem('user'));
     return (
@@ -115,9 +172,9 @@ export default function ParticipantPage() {
             <ImposterRow noImposter={30}/>
             <div className="flex justify-center mt-8">
                 <div>
-                    <QueryBox name ={user.fullname} id ={user.id}/>
-                    <AnswerBox name ={user.fullname} id ={user.id}/>
-                    <Timer time={300}/>
+                    <QueryBox name ={user.fullname} id ={user.id} isFreeze ={isFreeze}/>
+                    <AnswerBox name ={user.fullname} id ={user.id} isFreeze ={isFreeze}/>
+                    <Timer time={timeSec}/>
                 </div>
             </div>
         </section>
