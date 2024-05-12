@@ -33,6 +33,12 @@ const users = [
     password: '123',
     role: 'controller',
   },
+  {
+    id: 6,
+    username: 'viewer',
+    password: '123',
+    role: 'viewer',
+  }
 ];
 
 module.exports = { users };
