@@ -1,46 +1,50 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const getResult = require('./handlers');
-const http = require('http');
-const { hasDuplicate } = require('./validator');
 const { Server } = require('socket.io');
+const { createServer } = require('http');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const PORT = process.env.PORT || 3000;
+const express = require('express');
+const getResult = require('./src/interactor');
+const { auth } = require('./auth');
 
-//// MIDDLEWARES
-const app = express().set('view engine', 'ejs');
+const PORT = process.env.PORT || 4000;
+
+const app = express();
+app.use(bodyParser.json());
 app.use(cors());
 
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
+app.post('/login', auth);
 
-// parse application/json
-app.use(bodyParser.json());
+const httpServer = createServer(app);
 
-//// ROUTES
-app.get('/', (req, res) => {
-  res.render('index');
-});
-
-app.post('/ask', ({ body: { query, test } }, res) => {
-  const result = getResult(query);
-  if (test) res.render('index', { result: JSON.stringify(result) });
-  else res.json(result);
-});
-
-// Socket.io
-const server = http.createServer(app);
-const io = new Server(server, {
+const io = new Server(httpServer, {
   cors: {
     origin: '*',
   },
 });
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
+httpServer.listen(PORT, () => {
+  console.log(`Server is listening on ${PORT}.`);
 });
 
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+io.on('connect', (socket) => {
+  const username = `User ${socket.id.toString().slice(0, 6)}`;
+  console.log(`${username} is connected.`);
+
+  socket.on('query', (data) => {
+    console.log(typeof data);
+    if (typeof data.query === 'string') {
+      const query = data.query.trim();
+      console.log(`${username} asks interactor with query "${query}"`);
+      socket.emit('query', getResult(query));
+    } else {
+      console.log(
+        `${username} asks interactor with query which is not a string "${data.query}"`,
+      );
+    }
+  });
+
+  socket.on('disconnect', () => {
+    console.log(`${username} is disconnected.`);
+  });
 });
