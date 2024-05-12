@@ -44,6 +44,13 @@ io.on('connect', (socket) => {
     }
   });
 
+  socket.on('start', (data) => {
+    console.log(
+      `${username} starts a new round with ${data.imposters} imposters and results: ${data.results}`,
+    );
+    socket.broadcast.emit('start', data);
+  });
+
   socket.on('disconnect', () => {
     console.log(`${username} is disconnected.`);
   });
