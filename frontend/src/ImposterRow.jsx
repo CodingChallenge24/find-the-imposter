@@ -59,7 +59,7 @@ export default function ImposterRow({ noImposter }) { // noImposter is the numbe
         <div className='ImposterTable w-full'>
             {row}
             <div className='innerCell'>
-                <button className="p-2 bg-slate-300 w-[50px]" onClick={handleCopy}>Copy to clipboard</button>
+                <button className="p-2 bg-slate-300 w-[50px]" onClick={handleCopy}>Copy</button>
             </div>
         </div>
     )
