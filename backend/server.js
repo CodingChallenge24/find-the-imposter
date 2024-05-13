@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const express = require('express');
-const getResult = require('./interactor');
+const { getAnswer, loadData } = require('./interactor');
 const { auth } = require('./auth');
 
 const PORT = process.env.PORT || 4000;
@@ -36,7 +36,7 @@ io.on('connect', (socket) => {
     if (typeof data.query === 'string') {
       const query = data.query.trim();
       console.log(`${username} asks interactor with query "${query}"`);
-      socket.emit('query', getResult(query, currentData));
+      socket.emit('query', getAnswer(query));
     } else {
       console.log(
         `${username} asks interactor with query which is not a string "${data.query}"`,
@@ -48,7 +48,7 @@ io.on('connect', (socket) => {
     console.log(
       `${username} starts a new round with ${data.imposters} imposters and results: ${data.results}`,
     );
-
+    socket.emit('start', loadData(data));
     socket.broadcast.emit('start', data);
   });
 

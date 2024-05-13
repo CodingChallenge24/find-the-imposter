@@ -1,3 +1,8 @@
 const { getResult } = require('./handlers');
+const [dataRef, loadData] = require('./data');
 
-module.exports = getResult;
+function getAnswer(req) {
+  return getResult(req, dataRef.current);
+}
+
+module.exports = { getAnswer, loadData };

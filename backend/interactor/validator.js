@@ -21,10 +21,15 @@ function hasMoreThan(arrTarget, arrRef) {
   );
 }
 
+function isAMultipleOf(value, k) {
+  return value % k === 0;
+}
+
 module.exports = {
   hasDuplicate,
   allInRange,
   allIntegers,
   expectedNumber,
   hasMoreThan,
+  isAMultipleOf,
 };
