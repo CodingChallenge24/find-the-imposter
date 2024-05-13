@@ -22,6 +22,18 @@ function getMoreThanSolution(ans_k, out_k) {
   return `Solution has ${ans_k} imposter(s) but found ${out_k} imposter(s) in answer, which is more than expected.`;
 }
 
+function notANumber(value) {
+  return `${value} is not a number`;
+}
+
+function notAnArray(value) {
+  return `${value} is not an array`;
+}
+
+function notAMultipleOf(value, k) {
+  return `${value} is not a multiple of ${k}`;
+}
+
 module.exports = {
   outOfRange,
   allowOnlyIntegers,
@@ -29,4 +41,7 @@ module.exports = {
   expectedNumber,
   queryTypeNotSupported,
   getMoreThanSolution,
+  notANumber,
+  notAnArray,
+  notAMultipleOf,
 };

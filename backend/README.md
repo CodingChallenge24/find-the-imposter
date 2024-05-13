@@ -113,18 +113,16 @@ If `answer` is `INVALID`, then there is a key `messsage` which contains the erro
 
 ```json
 {
-  "query": "! k a1 a2 ... ak"
+  "query": "! a1 a2 ... ak"
 }
 ```
-
-`k` is the number of imposters and `a1,a2,...,ak` are respective guessed positions in range `[1,n]`.
 
 **Response**:
 
 ```json
 {
   "answer": "PARTIAL|OK",
-  "posMatch": [1, 2, 3],
+  "posMatch": [2, 3],
   "accuracy": 0.333333
 }
 ```
@@ -137,7 +135,7 @@ If `answer` is `INVALID`, then there is a key `messsage` which contains the erro
 ```json
 // Request
 {
-  "query": "! 3 1 2 3"
+  "query": "! 1 2 3"
 }
 // Response
 {
@@ -150,12 +148,12 @@ If `answer` is `INVALID`, then there is a key `messsage` which contains the erro
 ```json
 // Request
 {
-  "query": "! 3 1 2 4"
+  "query": "! 1 2 4"
 }
 // Response
 {
   "answer": "OK",
-  "posMatch": [1, 2, 4],
+  "posMatch": [2, 4],
   "accuracy": 1.000000
 }
 ```
@@ -176,9 +174,8 @@ If `answer` is `INVALID`, then there is a key `messsage` which contains the erro
 {
   "answer": "OK",
   "solution": {
-    "n": 6,
-    "k": 3,
-    "imposIds": [1, 2, 4]
+    "numImposters": 6,
+    "imposterPositions": [1, 2, 4]
   }
 }
 ```
