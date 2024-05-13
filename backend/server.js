@@ -46,10 +46,10 @@ io.on('connect', (socket) => {
 
   socket.on('start', (data) => {
     console.log(
-      `${username} starts a new round with ${data.imposters} imposters and results: ${data.results}`,
+      `${username} starts a new round with ${data.numPlayers} imposters and results: ${data.results}`,
     );
     socket.emit('start', loadData(data));
-    socket.broadcast.emit('start', data);
+    socket.broadcast.emit('start', { numPlayers: data.numPlayers });
   });
 
   socket.on('disconnect', () => {

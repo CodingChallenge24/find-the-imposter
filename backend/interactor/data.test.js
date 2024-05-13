@@ -4,12 +4,12 @@ const messageGenerator = require('./messages');
 
 describe('data', () => {
   it('should return an object with answer OK', () => {
-    const data = { imposters: 6, results: '1 2 3' };
+    const data = { numPlayers: 6, results: '1 2 3' };
     const expected = { answer: 'OK' };
     expect(loadData(data)).toEqual(expected);
   });
   it('should return an object with answer INVALID and a not a number message', () => {
-    const data = { imposters: 'a', results: '1 2 3' };
+    const data = { numPlayers: 'a', results: '1 2 3' };
     const expected = {
       answer: 'INVALID',
       message: messageGenerator.notANumber('a'),
@@ -17,7 +17,7 @@ describe('data', () => {
     expect(loadData(data)).toEqual(expected);
   });
   it('should return an object with answer INVALID and a out of range message', () => {
-    const data = { imposters: 101, results: '1 2 3' };
+    const data = { numPlayers: 101, results: '1 2 3' };
     const expected = {
       answer: 'INVALID',
       message: messageGenerator.outOfRange(6, 100, 101),
@@ -25,7 +25,7 @@ describe('data', () => {
     expect(loadData(data)).toEqual(expected);
   });
   it('should return an object with answer INVALID and a all integers message', () => {
-    const data = { imposters: 6, results: '1 2 a' };
+    const data = { numPlayers: 6, results: '1 2 a' };
     const expected = {
       answer: 'INVALID',
       message: messageGenerator.allowOnlyIntegers(),
@@ -33,7 +33,7 @@ describe('data', () => {
     expect(loadData(data)).toEqual(expected);
   });
   it('should return an object with answer INVALID and a out of range message', () => {
-    const data = { imposters: 6, results: '1 2 7' };
+    const data = { numPlayers: 6, results: '1 2 7' };
     const expected = {
       answer: 'INVALID',
       message: messageGenerator.outOfRange(1, 6, '1,2,7'),
@@ -41,7 +41,7 @@ describe('data', () => {
     expect(loadData(data)).toEqual(expected);
   });
   it('should return an object with answer INVALID and a no duplicates message', () => {
-    const data = { imposters: 6, results: '1 2 2' };
+    const data = { numPlayers: 6, results: '1 2 2' };
     const expected = {
       answer: 'INVALID',
       message: messageGenerator.noDuplicates(),
