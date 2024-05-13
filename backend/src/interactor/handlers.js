@@ -1,5 +1,5 @@
 const { QUERY_TYPE, ANSWER } = require('./constants');
-const { n, k, imposIds } = require('./data');
+const { numPlayers, imposterPositions } = require('./data');
 const messageGenerator = require('./messages');
 const validator = require('./validator');
 
@@ -9,7 +9,7 @@ function getResult(query) {
 }
 
 function getNumImposters(positions) {
-  return positions.filter((value) => imposIds.includes(value)).length;
+  return positions.filter((value) => imposterPositions.includes(value)).length;
 }
 
 function handleQueryType(req) {
@@ -38,9 +38,9 @@ function handleQuestion(req) {
   const positions = req.data.map((value) => parseInt(value));
   if (!validator.allIntegers(positions))
     return handleInvalid(messageGenerator.allowOnlyIntegers());
-  if (!validator.allInRange(positions, 1, n))
+  if (!validator.allInRange(positions, 1, numPlayers))
     return handleInvalid(
-      messageGenerator.outOfRange(1, n, positions.join(', ')),
+      messageGenerator.outOfRange(1, numPlayers, positions.join(', ')),
     );
   if (validator.hasDuplicate(positions))
     return handleInvalid(messageGenerator.noDuplicates());
@@ -50,36 +50,37 @@ function handleQuestion(req) {
 }
 
 function handleAnswer(req) {
-  const tmp = req.data.map((value) => parseInt(value));
-  if (!validator.allIntegers(tmp))
+  const positions = req.data.map((value) => parseInt(value));
+  if (!validator.allIntegers(positions))
     return handleInvalid(messageGenerator.allowOnlyIntegers());
-  const [out_k, ...positions] = tmp;
-  if (!validator.expectedNumber(out_k, positions.length))
+  if (!validator.allInRange(positions, 1, numPlayers))
     return handleInvalid(
-      messageGenerator.expectedNumber(out_k, positions.length),
-    );
-  if (!validator.allInRange(positions, 1, n))
-    return handleInvalid(
-      messageGenerator.outOfRange(1, n, positions.join(', ')),
+      messageGenerator.outOfRange(1, numPlayers, positions.join(', ')),
     );
   if (validator.hasDuplicate(positions))
     return handleInvalid(messageGenerator.noDuplicates());
-  if (validator.hasMoreThan(positions, imposIds))
+  if (validator.hasMoreThan(positions, imposterPositions))
     return handleInvalid(
-      messageGenerator.getMoreThanSolution(imposIds.length, positions.length),
+      messageGenerator.getMoreThanSolution(
+        imposterPositions.length,
+        positions.length,
+      ),
     );
-  const posMatch = positions.filter((value) => imposIds.includes(value));
+  const posMatch = positions.filter((value) =>
+    imposterPositions.includes(value),
+  );
   return {
-    answer: posMatch.length === k ? ANSWER.OK : ANSWER.PARTIAL,
+    answer:
+      posMatch.length === imposterPositions.length ? ANSWER.OK : ANSWER.PARTIAL,
     posMatch,
-    accuracy: (posMatch.length / k).toFixed(6),
+    accuracy: (posMatch.length / imposterPositions.length).toFixed(6),
   };
 }
 
 function handleSolution(req) {
   return {
     answer: ANSWER.OK,
-    solution: { n, k, imposIds },
+    solution: { numPlayers, imposterPositions },
   };
 }
 

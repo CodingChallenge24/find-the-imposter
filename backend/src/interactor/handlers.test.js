@@ -1,4 +1,4 @@
-const { n, k, imposIds } = require('./data');
+const { numPlayers, imposterPositions } = require('./data');
 const handlers = require('./handlers');
 const messageGenerator = require('./messages');
 const { QUERY_TYPE, ANSWER } = require('./constants');
@@ -51,7 +51,7 @@ describe('handlers', () => {
       const result = handlers.handleQuestion(req);
       expect(result).toEqual({
         answer: ANSWER.INVALID,
-        message: messageGenerator.outOfRange(1, n, '1, 2, 11'),
+        message: messageGenerator.outOfRange(1, numPlayers, '1, 2, 11'),
       });
     });
     it('returns an object with an INVALID answer and a no duplicates message', () => {
@@ -66,16 +66,19 @@ describe('handlers', () => {
 
   describe('handleAnswer', () => {
     it('returns an object with an OK answer', () => {
-      const req = { type: QUERY_TYPE.ANSWER, data: [k, ...imposIds] };
+      const req = {
+        type: QUERY_TYPE.ANSWER,
+        data: imposterPositions,
+      };
       const result = handlers.handleAnswer(req);
       expect(result).toEqual({
         answer: ANSWER.OK,
-        posMatch: imposIds,
+        posMatch: imposterPositions,
         accuracy: '1.000000',
       });
     });
     it('returns an object with a PARTIAL answer', () => {
-      const req = { type: QUERY_TYPE.ANSWER, data: [3, 1, 2, 3] };
+      const req = { type: QUERY_TYPE.ANSWER, data: [1, 2, 3] };
       const result = handlers.handleAnswer(req);
       expect(result).toEqual({
         answer: ANSWER.PARTIAL,
@@ -84,7 +87,7 @@ describe('handlers', () => {
       });
     });
     it('returns an object with an INVALID answer and a all integers message', () => {
-      const req = { type: QUERY_TYPE.ANSWER, data: [3, 1, 2, 'a'] };
+      const req = { type: QUERY_TYPE.ANSWER, data: [1, 2, 'a'] };
       const result = handlers.handleAnswer(req);
       expect(result).toEqual({
         answer: ANSWER.INVALID,
@@ -92,15 +95,15 @@ describe('handlers', () => {
       });
     });
     it('returns an object with an INVALID answer and a out of range message', () => {
-      const req = { type: QUERY_TYPE.ANSWER, data: [3, 1, 2, 11] };
+      const req = { type: QUERY_TYPE.ANSWER, data: [1, 2, 11] };
       const result = handlers.handleAnswer(req);
       expect(result).toEqual({
         answer: ANSWER.INVALID,
-        message: messageGenerator.outOfRange(1, n, '1, 2, 11'),
+        message: messageGenerator.outOfRange(1, numPlayers, '1, 2, 11'),
       });
     });
     it('returns an object with an INVALID answer and a no duplicates message', () => {
-      const req = { type: QUERY_TYPE.ANSWER, data: [3, 1, 2, 2] };
+      const req = { type: QUERY_TYPE.ANSWER, data: [1, 2, 2] };
       const result = handlers.handleAnswer(req);
       expect(result).toEqual({
         answer: ANSWER.INVALID,
@@ -108,11 +111,14 @@ describe('handlers', () => {
       });
     });
     it('returns an object with an INVALID answer and a redundant imposters message', () => {
-      const req = { type: QUERY_TYPE.ANSWER, data: [6, 1, 2, 3, 4, 5, 6] };
+      const req = { type: QUERY_TYPE.ANSWER, data: [1, 2, 3, 4, 5, 6] };
       const result = handlers.handleAnswer(req);
       expect(result).toEqual({
         answer: ANSWER.INVALID,
-        message: messageGenerator.getMoreThanSolution(imposIds.length, 6),
+        message: messageGenerator.getMoreThanSolution(
+          imposterPositions.length,
+          6,
+        ),
       });
     });
   });
