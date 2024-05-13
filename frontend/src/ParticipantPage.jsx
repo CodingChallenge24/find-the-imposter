@@ -145,10 +145,18 @@ function AnswerBox({name, id, isFreeze=false}) {
 }
 
 export default function ParticipantPage({timeSec}) {
+    const [imposters, setImposters] = useState(0);
     useEffect(() => {
         socket.connect();
+
+        socket.on('start', (data) => {
+            alert(`Start round with ${data.imposters} imposters and results: ${data.results}`);
+            setImposters(data.imposters);
+        });
+
         return () => {
             socket.disconnect();
+            socket.off('start');
         }
     }, [])
 
@@ -169,12 +177,14 @@ export default function ParticipantPage({timeSec}) {
         <section>
             <p>Thí sinh: {user.fullname} </p>
             <h2 className='text-3xl mb-6'>Flag section</h2>
-            <ImposterRow noImposter={30}/>
+            <ImposterRow noImposter={imposters}/>
             <div className="flex justify-center mt-8">
                 <div>
                     <QueryBox name ={user.fullname} id ={user.id} isFreeze ={isFreeze}/>
                     <AnswerBox name ={user.fullname} id ={user.id} isFreeze ={isFreeze}/>
-                    <Timer time={timeSec}/>
+                    {
+                        imposters > 0 && <Timer time={timeSec}/>
+                    }
                 </div>
             </div>
         </section>

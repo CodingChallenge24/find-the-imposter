@@ -1,10 +1,10 @@
-const { QUERY_TYPE, ANSWER } = require("./constants");
-const { n, k, imposIds } = require("./data");
-const messageGenerator = require("./messages");
-const validator = require("./validator");
+const { QUERY_TYPE, ANSWER } = require('./constants');
+const { n, k, imposIds } = require('./data');
+const messageGenerator = require('./messages');
+const validator = require('./validator');
 
 function getResult(query) {
-  const [type, ...data] = query.split(" ");
+  const [type, ...data] = query.split(' ');
   return handleQueryType({ type, data });
 }
 
@@ -40,7 +40,7 @@ function handleQuestion(req) {
     return handleInvalid(messageGenerator.allowOnlyIntegers());
   if (!validator.allInRange(positions, 1, n))
     return handleInvalid(
-      messageGenerator.outOfRange(1, n, positions.join(", "))
+      messageGenerator.outOfRange(1, n, positions.join(', ')),
     );
   if (validator.hasDuplicate(positions))
     return handleInvalid(messageGenerator.noDuplicates());
@@ -56,17 +56,21 @@ function handleAnswer(req) {
   const [out_k, ...positions] = tmp;
   if (!validator.expectedNumber(out_k, positions.length))
     return handleInvalid(
-      messageGenerator.expectedNumber(out_k, positions.length)
+      messageGenerator.expectedNumber(out_k, positions.length),
     );
   if (!validator.allInRange(positions, 1, n))
     return handleInvalid(
-      messageGenerator.outOfRange(1, n, positions.join(", "))
+      messageGenerator.outOfRange(1, n, positions.join(', ')),
     );
   if (validator.hasDuplicate(positions))
     return handleInvalid(messageGenerator.noDuplicates());
+  if (validator.hasMoreThan(positions, imposIds))
+    return handleInvalid(
+      messageGenerator.getMoreThanSolution(imposIds.length, positions.length),
+    );
   const posMatch = positions.filter((value) => imposIds.includes(value));
   return {
-    answer: posMatch.length === out_k ? ANSWER.OK : ANSWER.PARTIAL,
+    answer: posMatch.length === k ? ANSWER.OK : ANSWER.PARTIAL,
     posMatch,
     accuracy: (posMatch.length / k).toFixed(6),
   };
