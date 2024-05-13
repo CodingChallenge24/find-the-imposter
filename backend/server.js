@@ -48,7 +48,7 @@ io.on('connect', (socket) => {
     console.log(
       `${username} starts a new round with ${data.imposters} imposters and results: ${data.results}`,
     );
-    socket.broadcast.emit('start', data);
+    socket.broadcast.emit('start');
   });
 
   socket.on('disconnect', () => {
