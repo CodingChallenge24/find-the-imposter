@@ -36,7 +36,7 @@ io.on('connect', (socket) => {
     if (typeof data.query === 'string') {
       const query = data.query.trim();
       console.log(`${username} asks interactor with query "${query}"`);
-      socket.emit('query', getResult(query));
+      socket.emit('query', getResult(query, currentData));
     } else {
       console.log(
         `${username} asks interactor with query which is not a string "${data.query}"`,
@@ -48,6 +48,7 @@ io.on('connect', (socket) => {
     console.log(
       `${username} starts a new round with ${data.imposters} imposters and results: ${data.results}`,
     );
+
     socket.broadcast.emit('start', data);
   });
 
