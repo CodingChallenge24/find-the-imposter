@@ -42,25 +42,21 @@ export default function ImposterRow({ noImposter }) { // noImposter is the numbe
     function handleCopy() {
         let copyText = ""
         let listOn = []
-        copyText += '!'
+        copyText += '! '
         for (let i = 0; i < 30; i ++)
             if (currentOn >> i & 1)
                 listOn.push(`${i + 1}`);
 
-        copyText += ` ${listOn.length} `;
         listOn.forEach((num) => {copyText += num + ' ';})
 
         console.log(copyText)
         navigator.clipboard.writeText(copyText);
-
     }
 
     return (
         <div className='ImposterTable w-full'>
             {row}
-            <div className='innerCell'>
-                <button className="p-2 bg-slate-300 w-[50px]" onClick={handleCopy}>Copy</button>
-            </div>
+            <button className="mt-2 p-2 bg-slate-300 w-[50px]" onClick={handleCopy}>Copy</button>
         </div>
     )
 }

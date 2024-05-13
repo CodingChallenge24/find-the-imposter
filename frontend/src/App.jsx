@@ -22,28 +22,12 @@ function App() {
     }
   }
 
-
-  if (user && JSON.parse(user).id === 6) {
-    useEffect(()=>{
-      socket.connect()
-      return ()=>{
-          socket.disconnect()
-    }  })
-
-    return (
-      <>
-        {/* <ParticipantPage timeSec={300}></ParticipantPage> */}
-        <ViewerPage time={30}></ViewerPage>
-      </>
-    )
-  }
-
-
-    return (
-      <>
-        {
-          user ? <ParticipantPage timeSec={300}></ParticipantPage> :
-          <div id="login">
+  return (
+    <>
+      {
+        user
+          ? <ParticipantPage />
+          : <div id="login">
             <form className='flex flex-col gap-2 w-[300px] mx-auto' onSubmit={handleSubmit}>
               <h2 className='text-center text-xl'>Login</h2>
               <input type='text' name='user' placeholder='Enter username' />
@@ -52,29 +36,8 @@ function App() {
             </form>
           </div>
         }
-        {/* <ViewerPage time={30}></ViewerPage> */}
       </>
     )
-
-    // console.log(JSON.parse(user).id);
-
-  // return (
-  //   <>
-  //     {
-  //       user
-  //         ? <ParticipantPage timeSec={300}/> // please init with a time
-  //         : <div id="login">
-  //           <form className='flex flex-col gap-2 w-[300px] mx-auto' onSubmit={handleSubmit}>
-  //             <h2 className='text-center text-xl'>Login</h2>
-  //             <input type='text' name='user' placeholder='Enter username' />
-  //             <input type='password' name='password' placeholder='Enter password' />
-  //             <button type='submit'>Login</button>
-  //           </form>
-  //         </div>
-  //     }
-  //   <ViewerPage time = {300}></ViewerPage>
-  //   </>
-  // )
 }
 
 export default App

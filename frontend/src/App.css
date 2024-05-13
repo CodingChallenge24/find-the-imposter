@@ -65,13 +65,12 @@
 
 .user-bar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 1em;
+  /* padding: 1em; */
 }
 
 .sprite {
-  max-width: 2.0em;
+  /* max-width: 2.0em; */
   max-height: 8em;
   padding: 0;
 }
@@ -79,7 +78,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0;
 }
 .displayBox {
   max-width: 5em;

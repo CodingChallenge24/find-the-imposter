@@ -108,20 +108,10 @@ function AnswerBox({name, id, isFreeze=false}) {
     }
 
     function handleSubmit(event) {
-
-
-        // alert(`Answer: ${input}`);
-
-
         event.preventDefault();
         socket.emit('query', {query: input});
-        socket.on('query', (data) => {
-            const ans = data['answer']
-            const accuracy = data['accuracy']
-            const posMatch = data['posMatch']
-            alert(`Answer: ${ans}\nAccuracy: ${accuracy}\nPosition Match: ${posMatch}`);
-            socket.off('query');
-        })
+        socket.emit('answer', {id, answer: input});
+        setInput('');
     }
 
     if (isFreeze) {
@@ -144,14 +134,26 @@ function AnswerBox({name, id, isFreeze=false}) {
     }
 }
 
-export default function ParticipantPage({timeSec}) {
+export default function ParticipantPage() {
     const [imposters, setImposters] = useState(0);
+    const [isFreeze, setIsFreeze] = useState(false);
+    const [time, setTime] = useState(0);
+    const [score, setScore] = useState(0);
+
+    const user = JSON.parse(localStorage.getItem('user'));
+
     useEffect(() => {
         socket.connect();
 
         socket.on('start', (data) => {
-            alert(`Start round with ${data.imposters} imposters and results: ${data.results}`);
-            setImposters(data.imposters);
+            setImposters(data.numPlayers);
+            setIsFreeze(false);
+            setTime(300);
+        });
+
+        socket.on('score', (data) => {
+            console.log(data);
+            setScore(data.scores[user.id]);
         });
 
         return () => {
@@ -160,22 +162,20 @@ export default function ParticipantPage({timeSec}) {
         }
     }, [])
 
-    const [isFreeze, setIsFreeze] = useState(false);
-
     useEffect(() => {
         const timeout = setTimeout(() => {
             setIsFreeze(true);
-        }, timeSec * 1000);
+        }, time * 1000);
 
         return () => {
             clearTimeout(timeout);
         };
-    }, []);
+    }, [time]);
 
-    const user = JSON.parse(localStorage.getItem('user'));
     return (
         <section>
             <p>Thí sinh: {user.fullname} </p>
+            <p>Điểm: {score}</p>
             <h2 className='text-3xl mb-6'>Flag section</h2>
             <ImposterRow noImposter={imposters}/>
             <div className="flex justify-center mt-8">
@@ -183,7 +183,7 @@ export default function ParticipantPage({timeSec}) {
                     <QueryBox name ={user.fullname} id ={user.id} isFreeze ={isFreeze}/>
                     <AnswerBox name ={user.fullname} id ={user.id} isFreeze ={isFreeze}/>
                     {
-                        imposters > 0 && <Timer time={timeSec}/>
+                        time > 0 && <Timer time={time}/>
                     }
                 </div>
             </div>
