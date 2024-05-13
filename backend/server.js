@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const express = require('express');
-const getResult = require('./src/interactor');
+const getResult = require('./interactor');
 const { auth } = require('./auth');
 
 const PORT = process.env.PORT || 4000;
