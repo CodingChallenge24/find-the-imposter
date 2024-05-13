@@ -2,12 +2,13 @@ import { useState } from 'react'
 import personBlack from './assets/peopleBlack.png'
 import personRed from './assets/peopleRed.png'
 
-function IconButton({id}) {
+function IconButton({id, setCurrentOn, currentOn}) {
 
     const [count, setCount] = useState(0)
 
     function handleClick() {
         setCount((count + 1) % 2);
+        setCurrentOn(currentOn ^ (1 << (id - 1)));
     }
 
     return (
@@ -22,6 +23,7 @@ function IconButton({id}) {
 
 
 export default function ImposterRow({ noImposter }) { // noImposter is the number of button to display
+    const [currentOn, setCurrentOn] = useState(0);
 
     let row = [];
     let index = 0
@@ -31,14 +33,34 @@ export default function ImposterRow({ noImposter }) { // noImposter is the numbe
 
         let cnt = Math.min(noImposter - j * perRow, perRow);
         for (let i = 0; i < cnt; i ++) {
-            imposters.push(<IconButton id = {index + 1}/>);
+            imposters.push(<IconButton id = {index + 1} setCurrentOn={setCurrentOn} currentOn={currentOn}/>);
             index ++;
         }
         row.push(<div className='ImposterRow flex flex-wrap gap-4 justify-center'>{imposters}</div>)
     }
+
+    function handleCopy() {
+        let copyText = ""
+        let listOn = []
+        copyText += '!'
+        for (let i = 0; i < 30; i ++)
+            if (currentOn >> i & 1)
+                listOn.push(`${i + 1}`);
+
+        copyText += ` ${listOn.length} `;
+        listOn.forEach((num) => {copyText += num + ' ';})
+
+        console.log(copyText)
+        navigator.clipboard.writeText(copyText);
+
+    }
+
     return (
         <div className='ImposterTable w-full'>
             {row}
+            <div className='innerCell'>
+                <button className="p-2 bg-slate-300 w-[50px]" onClick={handleCopy}>Copy</button>
+            </div>
         </div>
     )
 }

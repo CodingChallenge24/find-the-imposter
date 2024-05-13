@@ -48,6 +48,7 @@ io.on('connect', (socket) => {
     console.log(
       `${username} starts a new round with ${data.numPlayers} players and results: ${data.results}`,
     );
+    
     socket.emit('start', loadData(data));
     socket.broadcast.emit('start', { numPlayers: data.numPlayers });
   });
