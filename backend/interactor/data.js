@@ -19,8 +19,6 @@ function loadData({ imposters, results }) {
     return handleInvalid(messageGenerator.notANumber(imposters));
   if (!validator.allInRange([imposters], 6, 100))
     return handleInvalid(messageGenerator.outOfRange(6, 100, imposters));
-  if (!validator.isAMultipleOf(imposters, 3))
-    return handleInvalid(messageGenerator.notAMultipleOf(imposters, 3));
   if (!validator.allIntegers(results))
     return handleInvalid(messageGenerator.allowOnlyIntegers());
   if (!validator.allInRange(results, 1, imposters))

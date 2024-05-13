@@ -24,14 +24,6 @@ describe('data', () => {
     };
     expect(loadData(data)).toEqual(expected);
   });
-  it('should return an object with answer INVALID and a not a multiple of 3 message', () => {
-    const data = { imposters: 7, results: '1 2 3' };
-    const expected = {
-      answer: 'INVALID',
-      message: messageGenerator.notAMultipleOf(7, 3),
-    };
-    expect(loadData(data)).toEqual(expected);
-  });
   it('should return an object with answer INVALID and a all integers message', () => {
     const data = { imposters: 6, results: '1 2 a' };
     const expected = {
