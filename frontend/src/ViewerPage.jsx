@@ -4,18 +4,22 @@ import { socket } from "./socket.js";
 import peopleBlack from './assets/peopleBlack.png'
 import peopleGreen from './assets/peopleGreen.png'
 import logo from './assets/logo.png'
+import Timer from "./Timer.jsx";
 
-export default function ViewerPage({time}) {
-
+export default function ViewerPage() {
     const [userList, setUserList] = useState([])
     const [numPlayers, setNumPlayers] = useState(0)
     const [answer, setAnswer] = useState("")
+    const [time, setTime] = useState(0)
     useEffect(() => {
         socket.connect();
         socket.on('update_view', (data) => {
             let playerList = []
             console.log(data)
             setNumPlayers(parseInt(data.numPlayers))
+            setTime(300)
+            setUserList([])
+            setAnswer([])
             data.participants.forEach(participant => {
                 playerList.push(<UserBar participant={participant} noImposter={data.numPlayers}/>)
             });
@@ -38,11 +42,12 @@ export default function ViewerPage({time}) {
             socket.disconnect();
         }
         // alert("23423iuser4234234")
-    }, [numPlayers])
+    }, [numPlayers, answer, userList])
 
     return (
         <>
             <img className="mx-auto" src={logo} />
+            { time > 0 && <Timer time={time} setTime={setTime}/> }
             <div className="flex flex-col gap-4">
                 {userList}
             </div>
@@ -51,7 +56,7 @@ export default function ViewerPage({time}) {
                 <div className='col-span-2 flex flex-wrap justify-center'>
                     {answer}
                 </div>
-        </div>
+            </div>
         </>
     )
 }

@@ -53,6 +53,10 @@ function QueryBox({name, id, isFreeze=false}) {
             setInput('');
         });
 
+        socket.on('start', (data) => {
+            setHistory([]);
+        })
+
         return () => {
             socket.off('query');
             socket.off('ask');
@@ -69,7 +73,7 @@ function QueryBox({name, id, isFreeze=false}) {
         alert(`Query: ${input}`);
         console.log('{"query": "' + input + '"}')
         // const myQuery = JSON.stringify({query: input})
-        socket.emit('query', {query: input});
+        socket.emit('query', {id, query: input});
         // history.push(`${input}`);
     }
 
@@ -146,9 +150,10 @@ export default function ParticipantPage() {
         socket.connect();
 
         socket.on('start', (data) => {
+            console.log(data);
             setImposters(data.numPlayers);
             setIsFreeze(false);
-            setTime(300);
+            setTime(10);
         });
 
         socket.on('score', (data) => {
@@ -157,12 +162,15 @@ export default function ParticipantPage() {
         });
 
         return () => {
-            socket.disconnect();
             socket.off('start');
+            socket.off('score');
+            socket.disconnect();
         }
     }, [])
 
     useEffect(() => {
+        if (time === 0) return;
+
         const timeout = setTimeout(() => {
             setIsFreeze(true);
         }, time * 1000);
@@ -174,16 +182,17 @@ export default function ParticipantPage() {
 
     return (
         <section>
+            <p>{isFreeze ? 'a' : 'b'}</p>
             <p>Thí sinh: {user.fullname} </p>
             <p>Điểm: {score}</p>
             <h2 className='text-3xl mb-6'>Flag section</h2>
-            <ImposterRow noImposter={imposters}/>
+            <ImposterRow isFreeze={isFreeze} id={user.id} noImposter={imposters}/>
             <div className="flex justify-center mt-8">
                 <div>
                     <QueryBox name ={user.fullname} id ={user.id} isFreeze ={isFreeze}/>
-                    <AnswerBox name ={user.fullname} id ={user.id} isFreeze ={isFreeze}/>
+                    {/* <AnswerBox name ={user.fullname} id ={user.id} isFreeze ={isFreeze}/> */}
                     {
-                        time > 0 && <Timer time={time}/>
+                        time > 0 && <Timer setTime={setTime} time={time}/>
                     }
                 </div>
             </div>

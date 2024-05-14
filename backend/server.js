@@ -48,6 +48,7 @@ io.on('connect', (socket) => {
     if (typeof data.query === 'string') {
       const query = data.query.trim();
       console.log(`${username} asks interactor with query "${query}"`);
+      socket.broadcast.emit('query_view', { id: data.id });
       socket.emit('query', getAnswer(query));
     } else {
       console.log(

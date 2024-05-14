@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-const Timer = ({ time }) => {
-    const [seconds, setSeconds] = useState(time);
-
+const Timer = ({ time, setTime }) => {
     useEffect(() => {
         const interval = setInterval(() => {
-        setSeconds(prevSeconds => {
+        setTime(prevSeconds => {
             if (prevSeconds === 0) {
             clearInterval(interval);
             return 0;
@@ -18,11 +16,11 @@ const Timer = ({ time }) => {
         return () => clearInterval(interval);
     }, [time]);
 
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
+    const minutes = Math.floor(time / 60);
+    const remainingSeconds = time % 60;
 
     const timerStyle = {
-        color: seconds < 10 ? "red" : "black",
+        color: time < 10 ? "red" : "black",
         width: "90px",
         height: "35px",
         border: "1px solid black",

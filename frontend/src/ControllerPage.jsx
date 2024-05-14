@@ -45,6 +45,7 @@ export default function ControllerPage() {
     const handleStart = () => {
         alert(`Start round with ${imposters} imposters and results: ${results}`);
         socket.emit('start', {numPlayers: imposters, results});
+        updateView();
     }
 
     const handleChangeImposters = (e) => {
