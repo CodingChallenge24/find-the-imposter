@@ -3,7 +3,7 @@ const messageGenerator = require('./messages');
 const validator = require('./validator');
 
 function getResult(query, data) {
-  const [type, ...args] = query.split(' ');
+  const [type, ...args] = query.split(' ').filter((value) => value !== '');
   return handleQueryType({ type, args }, data);
 }
 
