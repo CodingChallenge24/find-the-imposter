@@ -14,6 +14,7 @@ function loadData({ numPlayers, results }) {
   results = results
     .trim()
     .split(' ')
+    .filter((value) => value !== '')
     .map((value) => parseInt(value));
   if (isNaN(numPlayers))
     return handleInvalid(messageGenerator.notANumber(numPlayers));
