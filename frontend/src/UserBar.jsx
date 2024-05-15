@@ -88,6 +88,7 @@ export default function UserBar({participant, noImposter }) {
             setTimeout(() => {
                 setChoosingMask(0);
             }, 500);
+
         })
 
         socket.on('start', () => {
