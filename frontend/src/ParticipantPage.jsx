@@ -153,7 +153,7 @@ export default function ParticipantPage() {
             console.log(data);
             setImposters(data.numPlayers);
             setIsFreeze(false);
-            setTime(10);
+            setTime(300);
         });
 
         socket.on('score', (data) => {
