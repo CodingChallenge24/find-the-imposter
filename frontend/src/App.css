@@ -173,3 +173,21 @@
   text-align: left;
   margin: 5px
 }
+
+table, th, td {
+  border: 2px solid black;
+  border-collapse: collapse;
+  padding: 1em;
+}
+
+td {
+  text-align: center;
+  font-weight: bold;
+}
+
+
+#respond-box {
+  display: flex;
+  justify-content: center;
+  padding-top: 2em;
+}

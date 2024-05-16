@@ -4,6 +4,7 @@ import Timer from '../src/Timer.jsx'
 import { socket } from "./socket.js";
 // import { Socket } from "socket.io-client";
 import './App.css'
+import RespondBox from "./RespondBox.jsx";
 
 // function validateQuery(query) {
 //     s = query.replace(/\s+/g, ' ').trim()
@@ -196,6 +197,7 @@ export default function ParticipantPage() {
                     }
                 </div>
             </div>
+            <RespondBox></RespondBox>
         </section>
     )
 }
