@@ -3,7 +3,7 @@ import './App.css'
 import { socket } from './socket.js'
 import ParticipantPage from './ParticipantPage.jsx';
 import axios from 'axios';
-
+import ViewerPage from './ViewerPage.jsx';
 function App() {
   const user = localStorage.getItem('user');
 
@@ -26,7 +26,7 @@ function App() {
     <>
       {
         user
-          ? <ParticipantPage timeSec={10}/> // please init with a time
+          ? <ParticipantPage />
           : <div id="login">
             <form className='flex flex-col gap-2 w-[300px] mx-auto' onSubmit={handleSubmit}>
               <h2 className='text-center text-xl'>Login</h2>
@@ -35,9 +35,9 @@ function App() {
               <button type='submit'>Login</button>
             </form>
           </div>
-      }
-    </>
-  )
+        }
+      </>
+    )
 }
 
 export default App

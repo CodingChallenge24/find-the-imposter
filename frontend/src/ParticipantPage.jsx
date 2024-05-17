@@ -53,6 +53,10 @@ function QueryBox({name, id, isFreeze=false}) {
             setInput('');
         });
 
+        socket.on('start', (data) => {
+            setHistory([]);
+        })
+
         return () => {
             socket.off('query');
             socket.off('ask');
@@ -69,7 +73,7 @@ function QueryBox({name, id, isFreeze=false}) {
         alert(`Query: ${input}`);
         console.log('{"query": "' + input + '"}')
         // const myQuery = JSON.stringify({query: input})
-        socket.emit('query', {query: input});
+        socket.emit('query', {id, query: input});
         // history.push(`${input}`);
     }
 
@@ -108,20 +112,10 @@ function AnswerBox({name, id, isFreeze=false}) {
     }
 
     function handleSubmit(event) {
-
-
-        // alert(`Answer: ${input}`);
-
-
         event.preventDefault();
         socket.emit('query', {query: input});
-        socket.on('query', (data) => {
-            const ans = data['answer']
-            const accuracy = data['accuracy']
-            const posMatch = data['posMatch']
-            alert(`Answer: ${ans}\nAccuracy: ${accuracy}\nPosition Match: ${posMatch}`);
-            socket.off('query');
-        })
+        socket.emit('answer', {id, answer: input});
+        setInput('');
     }
 
     if (isFreeze) {
@@ -144,46 +138,61 @@ function AnswerBox({name, id, isFreeze=false}) {
     }
 }
 
-export default function ParticipantPage({timeSec}) {
+export default function ParticipantPage() {
     const [imposters, setImposters] = useState(0);
+    const [isFreeze, setIsFreeze] = useState(false);
+    const [time, setTime] = useState(0);
+    const [score, setScore] = useState(0);
+
+    const user = JSON.parse(localStorage.getItem('user'));
+
     useEffect(() => {
         socket.connect();
 
         socket.on('start', (data) => {
-            alert(`Start round with ${data.imposters} imposters and results: ${data.results}`);
-            setImposters(data.imposters);
+            console.log(data);
+            setImposters(data.numPlayers);
+            setIsFreeze(false);
+            setTime(10);
+        });
+
+        socket.on('score', (data) => {
+            console.log(data);
+            setScore(data.scores[user.id]);
         });
 
         return () => {
-            socket.disconnect();
             socket.off('start');
+            socket.off('score');
+            socket.disconnect();
         }
     }, [])
 
-    const [isFreeze, setIsFreeze] = useState(false);
-
     useEffect(() => {
+        if (time === 0) return;
+
         const timeout = setTimeout(() => {
             setIsFreeze(true);
-        }, timeSec * 1000);
+        }, time * 1000);
 
         return () => {
             clearTimeout(timeout);
         };
-    }, []);
+    }, [time]);
 
-    const user = JSON.parse(localStorage.getItem('user'));
     return (
         <section>
+            <p>{isFreeze ? 'a' : 'b'}</p>
             <p>Thí sinh: {user.fullname} </p>
+            <p>Điểm: {score}</p>
             <h2 className='text-3xl mb-6'>Flag section</h2>
-            <ImposterRow noImposter={imposters}/>
+            <ImposterRow isFreeze={isFreeze} id={user.id} noImposter={imposters}/>
             <div className="flex justify-center mt-8">
                 <div>
                     <QueryBox name ={user.fullname} id ={user.id} isFreeze ={isFreeze}/>
-                    <AnswerBox name ={user.fullname} id ={user.id} isFreeze ={isFreeze}/>
+                    {/* <AnswerBox name ={user.fullname} id ={user.id} isFreeze ={isFreeze}/> */}
                     {
-                        imposters > 0 && <Timer time={timeSec}/>
+                        time > 0 && <Timer setTime={setTime} time={time}/>
                     }
                 </div>
             </div>

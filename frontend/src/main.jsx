@@ -4,6 +4,7 @@ import App from './App.jsx'
 import './index.css'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import ControllerPage from './ControllerPage.jsx'
+import ViewerPage from './ViewerPage.jsx'
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
   {
     path: '/controller',
     element: <ControllerPage />,
+  },
+  {
+    path: '/viewer',
+    element: <ViewerPage />,
   }
 ])
 
