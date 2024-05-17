@@ -4,6 +4,7 @@ import Timer from '../src/Timer.jsx'
 import { socket } from "./socket.js";
 // import { Socket } from "socket.io-client";
 import './App.css'
+import RespondBox from "./RespondBox.jsx";
 
 // function validateQuery(query) {
 //     s = query.replace(/\s+/g, ' ').trim()
@@ -153,7 +154,7 @@ export default function ParticipantPage() {
             console.log(data);
             setImposters(data.numPlayers);
             setIsFreeze(false);
-            setTime(10);
+            setTime(300);
         });
 
         socket.on('score', (data) => {
@@ -196,6 +197,7 @@ export default function ParticipantPage() {
                     }
                 </div>
             </div>
+            <RespondBox></RespondBox>
         </section>
     )
 }

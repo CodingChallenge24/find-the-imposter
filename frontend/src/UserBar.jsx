@@ -65,7 +65,7 @@ export default function UserBar({participant, noImposter }) {
                 mask |= (1 << (parseInt(num) - 1));
             });
             console.log(mask);
-            
+
             for (let i = 0; i < noImposter; i++) {
                 if (mask & (1 << i) && choosingMask & (1 << i))
                     setScore((prev) => prev + 1);
@@ -77,6 +77,18 @@ export default function UserBar({participant, noImposter }) {
         socket.on('query_view', (data) => {
             if (data.id !== participant.id) return;
             setTotalQuery((prev) => prev + 1);
+            const intList = data.query.split(' ').map((num) => parseInt(num));
+            let mask = 0;
+            intList.forEach((num) => {
+                if (isNaN(num) || num < 1) return;
+                mask |= (1 << (num - 1));
+            });
+
+            setChoosingMask(mask);
+            setTimeout(() => {
+                setChoosingMask(0);
+            }, 500);
+
         })
 
         socket.on('start', () => {
