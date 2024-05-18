@@ -186,7 +186,7 @@ export default function ParticipantPage() {
             <p>Thí sinh: {user.fullname} </p>
             <p>Điểm: {score}</p>
             <h2 className='text-3xl mb-6'>Flag section</h2>
-            <ImposterRow isFreeze={isFreeze} id={user.id} noImposter={imposters}/>
+            <ImposterRow isFreeze={isFreeze} id={user.id} noImposter={imposters} setIsFreeze={setIsFreeze}/>
             <div className="flex justify-center mt-8">
                 <div>
                     <QueryBox name ={user.fullname} id ={user.id} isFreeze ={isFreeze}/>
