@@ -32,8 +32,6 @@ export default function UserBar({participant, noImposter }) {
     })
 
     useEffect(() => {
-        console.log(participant);
-        console.log(socket);
         socket.connect();
         socket.on('answer_view', (data) => {
             if (data.id !== participant.id) return;
@@ -121,8 +119,7 @@ export default function UserBar({participant, noImposter }) {
             </div>
             <div className='flex flex-col gap-2 items-start'>
                 <p className='text-lg'>Query: {totalQuery}</p>
-                <p>{score}</p>
-                <p className='text-lg'>Points: {Math.round(score * noImposter / 50 + 0.4)} / 50</p>
+                <p className='text-lg'>Points: {Math.round(score / noImposter * 25 + 0.4)} / 25</p>
             </div>
         </div>
     )

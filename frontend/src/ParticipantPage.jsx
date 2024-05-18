@@ -183,7 +183,6 @@ export default function ParticipantPage() {
 
     return (
         <section>
-            <p>{isFreeze ? 'a' : 'b'}</p>
             <p>Thí sinh: {user.fullname} </p>
             <p>Điểm: {score}</p>
             <h2 className='text-3xl mb-6'>Flag section</h2>
