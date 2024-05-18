@@ -19,7 +19,7 @@ function IconButton({disabled, id, setCurrentOn, currentOn}) {
 }
 
 
-export default function ImposterRow({ isFreeze, id, noImposter }) { // noImposter is the number of button to display
+export default function ImposterRow({ isFreeze, id, noImposter, setIsFreeze}) { // noImposter is the number of button to display
     const [currentOn, setCurrentOn] = useState(0);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -62,6 +62,9 @@ export default function ImposterRow({ isFreeze, id, noImposter }) { // noImposte
         socket.emit('query', {query: input});
         socket.emit('answer', {id, answer: input});
         setIsSubmitted(true);
+        setIsFreeze(true);
+        // alert("12312312312");
+        // console.log(123);
     }
 
     return (
