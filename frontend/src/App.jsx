@@ -5,6 +5,11 @@ import ParticipantPage from './ParticipantPage.jsx';
 import axios from 'axios';
 import ViewerPage from './ViewerPage.jsx';
 function App() {
+
+  useEffect(() => {
+    document.title = 'Find the imposter';
+  }, []);
+
   const user = localStorage.getItem('user');
 
   async function handleSubmit(event) {
