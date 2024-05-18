@@ -45,33 +45,6 @@ export default function UserBar({participant, noImposter }) {
             setChoosingMask((prev) => prev | mask);
         })
 
-        socket.on('show_score', (data) => {
-            console.log(data);
-            let total = 0;
-            for (let i = 0; i < noImposter; i++) {
-                if (choosingMask & (1 << i))
-                    total ++;
-            }
-            if (total < noImposter / 3 || total > noImposter * 2 / 3) {
-                setScore(0);
-                return;
-            }
-            const answer = data.imposterPositions;
-            let mask = 0;
-            answer.forEach((num) => {
-                if (isNaN(num)) return;
-                mask |= (1 << (parseInt(num) - 1));
-            });
-            console.log(mask);
-
-            for (let i = 0; i < noImposter; i++) {
-                if (mask & (1 << i) && choosingMask & (1 << i))
-                    setScore((prev) => prev + 1);
-                if (!(mask & (1 << i)) && !(choosingMask & (1 << i)))
-                    setScore((prev) => prev + 1);
-            }
-        })
-
         socket.on('query_view', (data) => {
             if (data.id !== participant.id) return;
             setTotalQuery((prev) => prev + 1);
@@ -102,6 +75,40 @@ export default function UserBar({participant, noImposter }) {
             socket.disconnect();
         }
     }, [choosingMask, socket]);
+
+    useEffect(() => {
+        socket.on('show_score', (data) => {
+            console.log(data);
+            let total = 0;
+            setScore(0);
+            for (let i = 0; i < noImposter; i++) {
+                if (choosingMask & (1 << i))
+                    total ++;
+            }
+            if (total < noImposter / 3 || total > noImposter * 2 / 3) {
+                setScore(0);
+                return;
+            }
+            const answer = data.imposterPositions;
+            let mask = 0;
+            answer.forEach((num) => {
+                if (isNaN(num)) return;
+                mask |= (1 << (parseInt(num) - 1));
+            });
+            console.log(mask);
+
+            for (let i = 0; i < noImposter; i++) {
+                if (mask & (1 << i) && choosingMask & (1 << i))
+                    setScore((prev) => prev + 1);
+                if (!(mask & (1 << i)) && !(choosingMask & (1 << i)))
+                    setScore((prev) => prev + 1);
+            }
+        })
+
+        return () => {
+            socket.off('show_score');
+        }
+    }, [score, choosingMask])
 
     let spriteList = []
     for (let i = 0; i < noImposter; i++) {
